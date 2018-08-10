@@ -30,7 +30,7 @@ function Transaction () {
   this.joinsplits = []
   this.versionGroupId = '0x03c48270'
   this.expiry = 0
-  this.zcash = true
+  this.zcash = false
 }
 
 Transaction.DEFAULT_SEQUENCE = 0xffffffff
@@ -362,7 +362,7 @@ Transaction.prototype.__byteLength = function (__allowWitness) {
     this.outs.reduce(function (sum, output) { return sum + 8 + varSliceSize(output.script) }, 0) +
     (hasWitnesses ? this.ins.reduce(function (sum, input) { return sum + vectorSize(input.witness) }, 0) : 0) +
     this.joinsplitByteLength() +
-    (this.version === 3 ? 12 : 0)
+    (this.version === 3 ? 8 : 0)
   )
 }
 
