@@ -8,12 +8,14 @@ var typeforce = require('typeforce')
 var types = require('./types')
 var varuint = require('varuint-bitcoin')
 
+// functions for reading bitcoin types
 function varSliceSize (someScript) {
   var length = someScript.length
 
   return varuint.encodingLength(length) + length
 }
 
+// functions for reading bitcoin types
 function vectorSize (someVector) {
   var length = someVector.length
 
@@ -68,6 +70,7 @@ Transaction.OUTPUTS_HASH_PERSON = new Buffer('ZcashOutputsHash')
 Transaction.JOINSPLITS_HASH_PERSON = new Buffer('ZcashJSplitsHash')
 Transaction.OVERWINTER_HASH_PERSON = Buffer.concat([new Buffer('ZcashSigHash'), Buffer.from('191ba85b', 'hex')])
 
+// used in any transaction parsings
 Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
   typeforce('Boolean', zcash)
   var offset = 0
@@ -260,6 +263,7 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
   return tx
 }
 
+// used in any transaction parsings
 Transaction.fromHex = function (hex, zcash) {
   typeforce('Boolean', zcash)
   return Transaction.fromBuffer(new Buffer(hex, 'hex'), zcash)
@@ -273,6 +277,7 @@ Transaction.isCoinbaseHash = function (buffer) {
   return true
 }
 
+// used in coinbase detection
 Transaction.prototype.isCoinbase = function () {
   return this.ins.length === 1 && Transaction.isCoinbaseHash(this.ins[0].hash)
 }
