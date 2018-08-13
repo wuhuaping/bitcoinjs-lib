@@ -22,15 +22,19 @@ function vectorSize (someVector) {
   }, 0)
 }
 
-function Transaction () {
-  this.version = 3
+function Transaction (zcash) {
+  typeforce('Boolean', zcash)
+  this.version = 1
   this.locktime = 0
   this.ins = []
   this.outs = []
-  this.joinsplits = []
-  this.versionGroupId = '0x03c48270'
-  this.expiry = 0
-  this.zcash = false
+  if (zcash) {
+    this.version = 3
+    this.joinsplits = []
+    this.versionGroupId = '0x03c48270'
+    this.expiry = 0
+  }
+  this.zcash = zcash
 }
 
 Transaction.DEFAULT_SEQUENCE = 0xffffffff
@@ -65,6 +69,7 @@ Transaction.JOINSPLITS_HASH_PERSON = new Buffer('ZcashJSplitsHash')
 Transaction.OVERWINTER_HASH_PERSON = Buffer.concat([new Buffer('ZcashSigHash'), Buffer.from('191ba85b', 'hex')])
 
 Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
+  typeforce('Boolean', zcash)
   var offset = 0
   function readSlice (n) {
     offset += n
@@ -130,7 +135,7 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
     }
   }
 
-  var tx = new Transaction()
+  var tx = new Transaction(zcash)
 
   if (zcash) {
     var header = readUInt32()
@@ -256,6 +261,7 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
 }
 
 Transaction.fromHex = function (hex, zcash) {
+  typeforce('Boolean', zcash)
   return Transaction.fromBuffer(new Buffer(hex, 'hex'), zcash)
 }
 
@@ -367,7 +373,7 @@ Transaction.prototype.__byteLength = function (__allowWitness) {
 }
 
 Transaction.prototype.clone = function () {
-  var newTx = new Transaction()
+  var newTx = new Transaction(this.zcash)
   newTx.version = this.version
   newTx.locktime = this.locktime
   newTx.zcash = this.zcash
