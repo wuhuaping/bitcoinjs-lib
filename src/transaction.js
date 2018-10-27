@@ -883,6 +883,7 @@ Transaction.prototype.__toBuffer = function (buffer, initialOffset, __allowWitne
 
   if (this.version >= 2 && this.zcash) {
     writeVarInt(this.joinsplits.length)
+    var version = this.version;
     this.joinsplits.forEach(function (joinsplit) {
       writeUInt64(joinsplit.vpubOld)
       writeUInt64(joinsplit.vpubNew)
@@ -898,7 +899,7 @@ Transaction.prototype.__toBuffer = function (buffer, initialOffset, __allowWitne
       joinsplit.macs.forEach(function (nullifier) {
         writeSlice(nullifier)
       })
-      if (this.version <= 3) {
+      if (version <= 3) {
         writeCompressedG1(joinsplit.zproof.gA)
         writeCompressedG1(joinsplit.zproof.gAPrime)
         writeCompressedG2(joinsplit.zproof.gB)
