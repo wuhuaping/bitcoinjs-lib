@@ -236,14 +236,12 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
   if (tx.version >= 4 && zcash) {
     tx.valueBalance = readUInt64();
     var sizeSpendDescs = readVarInt();
-    console.log(sizeSpendDescs);
     for (var i = 0; i < sizeSpendDescs; i++) {
       var spend = readSpentDesc();
       tx.spendDescs.push(spend);
     }
 
     var sizeOutputDescs = readVarInt();
-    console.log(sizeOutputDescs);
     for (var i = 0; i < sizeOutputDescs; i++) {
       var output = readOutputDesc();
       tx.outputDescs.push(output);
