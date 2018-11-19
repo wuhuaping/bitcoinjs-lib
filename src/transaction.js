@@ -25,6 +25,7 @@ function vectorSize (someVector) {
 function Transaction () {
   this.version = 3
   this.locktime = 0
+  this.timestamp = 0
   this.ins = []
   this.outs = []
   this.joinsplits = []
@@ -82,7 +83,7 @@ var ZC_SAPLING_OUTPLAINTEXT_SIZE = ZC_JUBJUB_POINT_SIZE + ZC_JUBJUB_SCALAR_SIZE;
 var ZC_SAPLING_ENCCIPHERTEXT_SIZE = ZC_SAPLING_ENCPLAINTEXT_SIZE + NOTEENCRYPTION_AUTH_BYTES;
 var ZC_SAPLING_OUTCIPHERTEXT_SIZE = ZC_SAPLING_OUTPLAINTEXT_SIZE + NOTEENCRYPTION_AUTH_BYTES;
 
-Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
+Transaction.fromBuffer = function (buffer, zcash, hasTimestamp, __noStrict) {
   var offset = 0
   function readSlice (n) {
     offset += n
@@ -197,6 +198,10 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
       offset += 2
       hasWitnesses = true
     }
+  }
+
+  if (hasTimestamp) {
+    tx.timestamp = readUInt32()
   }
 
   var vinLen = readVarInt()
@@ -322,8 +327,8 @@ Transaction.fromBuffer = function (buffer, zcash, __noStrict) {
   return tx
 }
 
-Transaction.fromHex = function (hex, zcash) {
-  return Transaction.fromBuffer(new Buffer(hex, 'hex'), zcash)
+Transaction.fromHex = function (hex, zcash, hasTimestamp) {
+  return Transaction.fromBuffer(new Buffer(hex, 'hex'), zcash, hasTimestamp)
 }
 
 Transaction.isCoinbaseHash = function (buffer) {
@@ -465,6 +470,7 @@ Transaction.prototype.__byteLength = function (__allowWitness) {
 
   return (
     (hasWitnesses ? 10 : 8) +
+    (this.timestamp ? 4 : 0) +
     varuint.encodingLength(this.ins.length) +
     varuint.encodingLength(this.outs.length) +
     this.ins.reduce(function (sum, input) { return sum + 40 + varSliceSize(input.script) }, 0) +
@@ -833,6 +839,10 @@ Transaction.prototype.__toBuffer = function (buffer, initialOffset, __allowWitne
   if (hasWitnesses) {
     writeUInt8(Transaction.ADVANCED_TRANSACTION_MARKER)
     writeUInt8(Transaction.ADVANCED_TRANSACTION_FLAG)
+  }
+
+  if (this.timestamp) {
+    writeUInt32(this.timestamp)
   }
 
   writeVarInt(this.ins.length)
