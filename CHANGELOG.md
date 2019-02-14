@@ -1,3 +1,7 @@
+# 3.6.0
+__added__
+- Added timestamp to `Transaction` object (Capricoin)
+
 # 3.2.0
 __added__
 - Added `address.fromBech32/toBech32` (#846)

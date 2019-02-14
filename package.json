@@ -1,7 +1,7 @@
 {
   "name": "bitcoinjs-lib-zcash",
-  "version": "3.5.2",
-  "description": "Client-side Bitcoin JavaScript library with simple zcash support",
+  "version": "3.6.0",
+  "description": "Client-side Bitcoin JavaScript library with simple zcash and capricoin support",
   "main": "./src/index.js",
   "engines": {
     "node": ">=4.0.0"
@@ -9,6 +9,8 @@
   "keywords": [
     "bitcoinjs",
     "bitcoin",
+    "zcash",
+    "capricoin",
     "browserify",
     "javascript",
     "bitcoinjs"
