@@ -1,6 +1,8 @@
 # Dev directories
 .gitignore
 .travis.yml
+.nyc_output
+coverage
 
 # Dependency directory
 node_modules
