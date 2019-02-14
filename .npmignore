@@ -1,0 +1,7 @@
+# Dev directories
+.gitignore
+.travis.yml
+
+# Dependency directory
+node_modules
+yarn.lock
